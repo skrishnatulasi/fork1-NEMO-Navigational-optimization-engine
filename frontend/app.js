@@ -521,3 +521,106 @@ function startLiveDashboard() {
   liveAlertInterval = setInterval(updateLiveAlert, 30000);
 }
 window.addEventListener('DOMContentLoaded', startLiveDashboard);
+
+// Add Tamil audio functionality to existing app.js
+
+// Tamil translations for audio
+const tamilAudio = {
+  welcome: 'வணக்கம்! நீமோ மீன்பிடி வழிகாட்டி உங்களை வரவேற்கிறது',
+  zoneFound: 'சிறந்த மீன்பிடி இடம் கண்டுபிடிக்கப்பட்டது',
+  safetyFirst: 'கடலில் எப்போதும் பாதுகாப்பு உபகரணங்களை அணியுங்கள்',
+  goodLuck: 'நல்ல மீன்பிடி வாழ்த்துக்கள்'
+};
+
+// Add to existing event listeners
+document.getElementById('tamilAudioBtn').onclick = function() {
+  const audioControls = document.getElementById('audio-controls');
+  audioControls.style.display = audioControls.style.display === 'none' ? 'block' : 'none';
+};
+
+// Tamil audio functions
+async function speakTamil(text) {
+  try {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ta-IN';
+      utterance.rate = 0.8;
+      speechSynthesis.speak(utterance);
+    }
+  } catch (error) {
+    console.error('Tamil speech error:', error);
+  }
+}
+
+function playWelcomeMessage() {
+  speakTamil(tamilAudio.welcome);
+}
+
+function playRouteInstructions() {
+  if (!routeLine) {
+    speakTamil('முதலில் வழியை கண்டறியுங்கள்');
+    return;
+  }
+  
+  const instructions = `${routeLine.feature.properties.distance_km} கிலோமீட்டர் தூரத்தில் சிறந்த மீன்பிடி இடம் உள்ளது. ${routeLine.feature.properties.est_time_hr} மணி நேரம் ஆகும்.`;
+  speakTamil(instructions);
+}
+
+function playZoneInfo() {
+  if (hotspotMarkers.length === 0) {
+    speakTamil('முதலில் மீன்பிடி இடங்களை கண்டறியுங்கள்');
+    return;
+  }
+  
+  speakTamil(`${hotspotMarkers.length} மீன்பிடி இடங்கள் கண்டுபிடிக்கப்பட்டுள்ளன. ${tamilAudio.goodLuck}`);
+}
+
+function playSafetyAlert() {
+  speakTamil(`${tamilAudio.safetyFirst}. கடலில் செல்லும் முன் வானிலை அறிக்கையை சரிபார்க்கவும்.`);
+}
+
+// Enhance existing predictBtn onclick
+const originalPredictBtn = document.getElementById('predictBtn').onclick;
+document.getElementById('predictBtn').onclick = async function() {
+  await originalPredictBtn?.call(this);
+  
+  // Enable audio buttons after prediction
+  document.getElementById('zoneAudioBtn').disabled = false;
+  
+  // Auto-announce in Tamil
+  setTimeout(() => {
+    speakTamil(tamilAudio.zoneFound);
+  }, 1000);
+};
+
+// Enhance existing routeBtn onclick
+const originalRouteBtn = document.getElementById('routeBtn').onclick;
+document.getElementById('routeBtn').onclick = async function() {
+  await originalRouteBtn?.call(this);
+  
+  // Enable route audio button
+  document.getElementById('routeAudioBtn').disabled = false;
+  
+  // Auto-announce route found
+  setTimeout(() => {
+    speakTamil('வழி கண்டுபிடிக்கப்பட்டது');
+  }, 1000);
+};
+
+// Add Tamil audio to catch form submission
+document.getElementById('catchForm').addEventListener('submit', function(e) {
+  // ... existing catch form code ...
+  
+  // Add Tamil confirmation
+  setTimeout(() => {
+    speakTamil('மீன்பிடி பதிவு சேமிக்கப்பட்டது');
+  }, 500);
+});
+
+// Add Tamil audio to language toggle
+document.getElementById('langBtn').onclick = function() {
+  // ... existing language toggle code ...
+  
+  const currentLang = lang === 'en' ? 'தமிழ்' : 'English';
+  speakTamil(`மொழி மாற்றப்பட்டது ${currentLang}`);
+};
