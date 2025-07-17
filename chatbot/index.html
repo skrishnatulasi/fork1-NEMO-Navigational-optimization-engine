@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NOVA Chatbot</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f1f5f9; }
+    #chatbox {
+      width: 90%; max-width: 600px; margin: 50px auto;
+      background: white; border-radius: 10px; padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .message { margin: 10px 0; }
+    .user { text-align: right; color: #0070f3; }
+    .bot { text-align: left; color: #111827; }
+    #input-container {
+      display: flex; margin-top: 20px;
+    }
+    #user-input {
+      flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px;
+    }
+    #send-btn {
+      padding: 10px 15px; margin-left: 10px;
+      background: #0070f3; color: white;
+      border: none; border-radius: 5px;
+      cursor: pointer;
+    }
+    #send-btn:hover { background: #005dc0; }
+  </style>
+</head>
+<body>
+  <div id="chatbox">
+    <div id="messages"></div>
+    <div id="input-container">
+      <input id="user-input" type="text" placeholder="Type your question...">
+      <button id="send-btn">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const messages = document.getElementById("messages");
+    const input = document.getElementById("user-input");
+    const button = document.getElementById("send-btn");
+
+    function addMessage(text, sender) {
+      const msg = document.createElement("div");
+      msg.classList.add("message", sender);
+      msg.innerText = text;
+      messages.appendChild(msg);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const userText = input.value.trim();
+      if (!userText) return;
+      addMessage(userText, "user");
+      input.value = "";
+
+      try {
+        const response = await fetch("http://localhost:5000/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userText })
+        });
+
+        const data = await response.json();
+        addMessage(data.reply, "bot");
+      } catch (err) {
+        console.error(err);
+        addMessage("⚠️ Failed to connect to model server.", "bot");
+      }
+    }
+
+    button.addEventListener("click", sendMessage);
+    input.addEventListener("keypress", e => {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>
