@@ -36,6 +36,7 @@
               <div>
                 <button class="btn btn-primary btn-sm" id="predictBtn"><i class="fa-solid fa-water"></i> Predict Zones / இடங்களை கணிக்க</button>
                 <button class="btn btn-success btn-sm" id="routeBtn"><i class="fa-solid fa-route"></i> Optimize Route / வழியை மேம்படுத்து</button>
+                <button class="btn btn-warning btn-sm" id="tamilAudioBtn"><i class="fa-solid fa-volume-up"></i> தமிழ் ஆடியோ</button>
               </div>
             </div>
             <div class="card-body p-0">
@@ -48,6 +49,26 @@
             </div>
           </div>
           <div id="route-summary"></div>
+          <!-- NEW: Tamil Audio Controls Section -->
+          <div id="audio-controls" class="card mt-3" style="display:none;">
+            <div class="card-header">
+              <i class="fa-solid fa-volume-up"></i> Tamil Audio Controls / தமிழ் ஆடியோ கட்டுப்பாடுகள்
+            </div>
+            <div class="card-body">
+              <button class="btn btn-info btn-sm me-2" onclick="playWelcomeMessage()">
+                <i class="fa-solid fa-play"></i> Welcome / வரவேற்பு
+              </button>
+              <button class="btn btn-success btn-sm me-2" onclick="playRouteInstructions()" id="routeAudioBtn" disabled>
+                <i class="fa-solid fa-route"></i> Route Instructions / வழி வழிகாட்டுதல்
+              </button>
+              <button class="btn btn-warning btn-sm me-2" onclick="playZoneInfo()" id="zoneAudioBtn" disabled>
+                <i class="fa-solid fa-info-circle"></i> Zone Info / இட தகவல்
+              </button>
+              <button class="btn btn-danger btn-sm" onclick="playSafetyAlert()">
+                <i class="fa-solid fa-exclamation-triangle"></i> Safety Alert / பாதுகாப்பு எச்சரிக்கை
+              </button>
+            </div>
+          </div>
         </div>
         <div id="section-catch" class="section" style="display:none;">
           <div class="card">
@@ -100,6 +121,104 @@
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
   <script src="static/app.js"></script>
+  <!-- NEW: Tamil Audio Enhancement Script -->
+  <script>
+    // Tamil audio functionality - added without modifying existing code
+    const tamilAudio = {
+      welcome: 'வணக்கம்! நீமோ மீன்பிடி வழிகாட்டி உங்களை வரவேற்கிறது',
+      zoneFound: 'சிறந்த மீன்பிடி இடம் கண்டுபிடிக்கப்பட்டது',
+      safetyFirst: 'கடலில் எப்போதும் பாதுகாப்பு உபகரணங்களை அணியுங்கள்',
+      goodLuck: 'நல்ல மீன்பிடி வாழ்த்துக்கள்',
+      routeFound: 'வழி கண்டுபிடிக்கப்பட்டது',
+      catchLogged: 'மீன்பிடி பதிவு சேமிக்கப்பட்டது'
+    };
+
+    // Tamil speech function
+    function speakTamil(text) {
+      try {
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = 'ta-IN';
+          utterance.rate = 0.8;
+          speechSynthesis.speak(utterance);
+        }
+      } catch (error) {
+        console.error('Tamil speech error:', error);
+      }
+    }
+
+    // Audio control functions
+    function playWelcomeMessage() {
+      speakTamil(tamilAudio.welcome);
+    }
+
+    function playRouteInstructions() {
+      // Check if route exists (you may need to adjust this based on your existing variables)
+      speakTamil('வழி வழிகாட்டுதல் தயார். சிறந்த மீன்பிடி இடத்திற்கு செல்லுங்கள்.');
+    }
+
+    function playZoneInfo() {
+      speakTamil('மீன்பிடி இடங்கள் கண்டுபிடிக்கப்பட்டுள்ளன. ' + tamilAudio.goodLuck);
+    }
+
+    function playSafetyAlert() {
+      speakTamil(tamilAudio.safetyFirst + '. கடலில் செல்லும் முன் வானிலை அறிக்கையை சரிபார்க்கவும்.');
+    }
+
+    // Enhanced event listeners (non-intrusive)
+    document.addEventListener('DOMContentLoaded', function() {
+      // Tamil Audio Button
+      const tamilAudioBtn = document.getElementById('tamilAudioBtn');
+      if (tamilAudioBtn) {
+        tamilAudioBtn.addEventListener('click', function() {
+          const audioControls = document.getElementById('audio-controls');
+          audioControls.style.display = audioControls.style.display === 'none' ? 'block' : 'none';
+        });
+      }
+
+      // Enhance Predict Button (non-intrusive)
+      const predictBtn = document.getElementById('predictBtn');
+      if (predictBtn) {
+        predictBtn.addEventListener('click', function() {
+          setTimeout(() => {
+            document.getElementById('zoneAudioBtn').disabled = false;
+            speakTamil(tamilAudio.zoneFound);
+          }, 2000);
+        });
+      }
+
+      // Enhance Route Button (non-intrusive)
+      const routeBtn = document.getElementById('routeBtn');
+      if (routeBtn) {
+        routeBtn.addEventListener('click', function() {
+          setTimeout(() => {
+            document.getElementById('routeAudioBtn').disabled = false;
+            speakTamil(tamilAudio.routeFound);
+          }, 2000);
+        });
+      }
+
+      // Enhance Catch Form (non-intrusive)
+      const catchForm = document.getElementById('catchForm');
+      if (catchForm) {
+        catchForm.addEventListener('submit', function(e) {
+          setTimeout(() => {
+            speakTamil(tamilAudio.catchLogged);
+          }, 500);
+        });
+      }
+
+      // Enhance Language Button (non-intrusive)
+      const langBtn = document.getElementById('langBtn');
+      if (langBtn) {
+        langBtn.addEventListener('click', function() {
+          setTimeout(() => {
+            speakTamil('மொழி மாற்றப்பட்டது');
+          }, 300);
+        });
+      }
+    });
+  </script>
 </body>
 </html>
 
