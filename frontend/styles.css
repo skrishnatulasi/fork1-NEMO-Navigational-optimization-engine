@@ -15,3 +15,28 @@ body {
 .toast {
   z-index: 9999;
 }
+/* Add to existing styles.css */
+
+#audio-controls {
+  border-left: 4px solid #ffc107;
+}
+
+#audio-controls .btn {
+  margin: 2px;
+}
+
+.audio-playing {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+/* Tamil text styling */
+.tamil-text {
+  font-family: 'Noto Sans Tamil', sans-serif;
+  font-size: 1.1em;
+}
