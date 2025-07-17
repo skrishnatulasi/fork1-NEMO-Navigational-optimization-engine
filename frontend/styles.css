@@ -1,0 +1,17 @@
+body {
+  background: #f8f9fa;
+}
+.section {
+  margin-bottom: 20px;
+}
+#sidebar .active {
+  background: #0d6efd;
+  color: #fff;
+}
+#map {
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+.toast {
+  z-index: 9999;
+}

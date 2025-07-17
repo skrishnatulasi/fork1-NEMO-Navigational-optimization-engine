@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tamil Nadu Fishermen App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="static/styles.css" />
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <span class="navbar-brand"><i class="fa-solid fa-fish"></i> Tamil Nadu Fishermen / தமிழ்நாடு மீனவர்கள்</span>
+      <button id="langBtn" class="btn btn-light btn-sm ms-auto">🌐 தமிழ் / English</button>
+    </div>
+  </nav>
+  <div class="container-fluid mt-3">
+    <div class="row">
+      <div class="col-md-3 mb-3">
+        <div class="list-group" id="sidebar">
+          <button class="list-group-item list-group-item-action active" data-section="map"><i class="fa-solid fa-map"></i> Map & PFZ / வரைபடம் & மீன்பிடி இடங்கள்</button>
+          <button class="list-group-item list-group-item-action" data-section="catch"><i class="fa-solid fa-clipboard-list"></i> Catch Log / பிடிப்பு பதிவு</button>
+          <button class="list-group-item list-group-item-action" data-section="income"><i class="fa-solid fa-chart-line"></i> Income / வருமானம்</button>
+          <button class="list-group-item list-group-item-action" data-section="harbor"><i class="fa-solid fa-anchor"></i> Harbor / துறைமுகம்</button>
+          <button class="list-group-item list-group-item-action" data-section="subsidy"><i class="fa-solid fa-money-check-dollar"></i> Subsidy / உதவித்தொகை</button>
+          <button class="list-group-item list-group-item-action" data-section="safety"><i class="fa-solid fa-life-ring"></i> Safety / பாதுகாப்பு</button>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div id="section-map" class="section">
+          <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span><i class="fa-solid fa-map"></i> Map & Potential Fishing Zones / வரைபடம் & சாத்தியமான மீன்பிடி இடங்கள்</span>
+              <div>
+                <button class="btn btn-primary btn-sm" id="predictBtn"><i class="fa-solid fa-water"></i> Predict Zones / இடங்களை கணிக்க</button>
+                <button class="btn btn-success btn-sm" id="routeBtn"><i class="fa-solid fa-route"></i> Optimize Route / வழியை மேம்படுத்து</button>
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <div id="map" style="height:400px;"></div>
+            </div>
+            <div class="card-footer">
+              <span class="badge bg-danger">●</span> High catch / அதிக பிடிப்பு
+              <span class="badge bg-warning text-dark">●</span> Medium catch / நடுத்தர பிடிப்பு
+              <span class="badge bg-primary">●</span> Low catch / குறைந்த பிடிப்பு
+            </div>
+          </div>
+          <div id="route-summary"></div>
+        </div>
+        <div id="section-catch" class="section" style="display:none;">
+          <div class="card">
+            <div class="card-header"><i class="fa-solid fa-clipboard-list"></i> Catch Log / பிடிப்பு பதிவு</div>
+            <div class="card-body">
+              <form id="catchForm" class="row g-2">
+                <div class="col-md-3"><input type="text" class="form-control" id="fishType" placeholder="Fish Type / மீன் வகை" required /></div>
+                <div class="col-md-2"><input type="number" class="form-control" id="weight" placeholder="Weight (kg) / எடை (கி.கி)" required /></div>
+                <div class="col-md-2"><input type="number" class="form-control" id="price" placeholder="Price (₹) / விலை (₹)" required /></div>
+                <div class="col-md-3"><input type="text" class="form-control" id="buyer" placeholder="Buyer / வாங்குபவர்" /></div>
+                <div class="col-md-2"><button type="submit" class="btn btn-success w-100">Log Catch / பதிவு செய்</button></div>
+              </form>
+              <div id="catch-log-list" class="mt-3"></div>
+            </div>
+          </div>
+        </div>
+        <div id="section-income" class="section" style="display:none;">
+          <div class="card">
+            <div class="card-header"><i class="fa-solid fa-chart-line"></i> Income & Sales / வருமானம் & விற்பனை</div>
+            <div class="card-body" id="income-content"></div>
+          </div>
+        </div>
+        <div id="section-harbor" class="section" style="display:none;">
+          <div class="card">
+            <div class="card-header"><i class="fa-solid fa-anchor"></i> Harbor & Landing Center / துறைமுகம் & இறங்கும் மையம்</div>
+            <div class="card-body" id="harbor-content"></div>
+          </div>
+        </div>
+        <div id="section-subsidy" class="section" style="display:none;">
+          <div class="card">
+            <div class="card-header"><i class="fa-solid fa-money-check-dollar"></i> Subsidy & Scheme Checker / உதவித்தொகை & திட்டம் சரிபார்ப்பு</div>
+            <div class="card-body" id="subsidy-content"></div>
+          </div>
+        </div>
+        <div id="section-safety" class="section" style="display:none;">
+          <div class="card">
+            <div class="card-header"><i class="fa-solid fa-life-ring"></i> Safety & SOS / பாதுகாப்பு & அவசர உதவி</div>
+            <div class="card-body" id="safety-content"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="toast" class="toast align-items-center text-bg-success border-0 position-fixed bottom-0 end-0 m-3" role="alert" aria-live="assertive" aria-atomic="true" style="display:none;">
+    <div class="d-flex">
+      <div class="toast-body" id="toast-body"></div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="hideToast()"></button>
+    </div>
+  </div>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+  <script src="static/app.js"></script>
+</body>
+</html>
+
