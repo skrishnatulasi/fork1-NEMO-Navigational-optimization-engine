@@ -74,5 +74,10 @@ How It Works – Pipeline
   _“மீனவர்கள் சகோதரரே, கிழக்கு திசைக்கு 22 கி.மீ பயணியுங்கள். அதிகமான மீன் வாய்ப்பு உள்ளது.”_
 - He returns with 3x more catch than usual — saving fuel and avoiding storms.
 
+- For any queries contact- anjanarangarajan06@gmail.com
+- TEAM NEXUS:
+- ANJANA RANGARAJAN
+- KRISHNA TULASI S
+
 
 
